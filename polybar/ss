@@ -1,0 +1,17 @@
+#!/bin/sh
+
+readonly ss_port=60080
+
+get_command() {
+    echo "iptables -t nat -$1 OUTPUT -p tcp -m multiport --dports 80,443 -j REDIRECT --to-port $ss_port"
+}
+
+eval $(get_command C) > /dev/null 2>&1
+
+if [ $? -ne 0 ]; then
+    eval $(get_command A)
+    polybar-msg hook ss 2
+else
+    eval $(get_command D)
+    polybar-msg hook ss 1
+fi

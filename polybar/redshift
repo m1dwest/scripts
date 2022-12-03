@@ -1,0 +1,13 @@
+#!/bin/sh
+
+readonly lock_path="/run/user/$(id -u)/polybar-redshift.lock"
+
+if [ -f "$lock_path" ]; then
+    rm "$lock_path"
+    redshift -x
+    polybar-msg hook redshift 1
+else
+    touch "$lock_path"
+    redshift -l 55.75222:37.61556 -m randr -o
+    polybar-msg hook redshift 2
+fi
